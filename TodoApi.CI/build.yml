@@ -10,7 +10,6 @@ inputs:
 
 outputs:
 - name: TodoApi-Build
-- name: TodoApi-Publish
 
 run:
   path: sh
@@ -21,11 +20,6 @@ run:
     cd TodoApi
     TodoApi.CI/build.sh
     cd ..
-    
-    # Output for publishing
-    mkdir -p TodoApi-Publish/TodoApi/bin/Release/netcoreapp2.0/publish
-    mv TodoApi/TodoApi/bin/Release/netcoreapp2.0/publish/* TodoApi-Publish/TodoApi/bin/Release/netcoreapp2.0/publish/
-    mv TodoApi/TodoApi.Deploy TodoApi-Publish/
     
     # Output for testing
     mv TodoApi/* TodoApi-Build/

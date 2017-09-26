@@ -4,6 +4,6 @@ applications:
   path: ../TodoApi/bin/Release/netcoreapp2.0/publish
   buildpack: https://github.com/cloudfoundry/dotnet-core-buildpack.git
   routes:
-  - route: cnosal-todo-api.cfapps.io
+  - route: cnosal-todo-api-staging.cfapps.io
   services:
-  - todo-mysql
+  - todo-staging-mysql

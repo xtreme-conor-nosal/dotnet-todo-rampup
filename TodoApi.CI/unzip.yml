@@ -1,0 +1,20 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ubuntu
+
+inputs:
+- name: gh-release
+
+outputs:
+- name: TodoApi-Publish
+
+run:
+  path: sh
+  args: 
+  - -exc
+  - |
+    mkdir TodoApi-Publish
+    tar -xvf gh-release/todo-api.tar -C TodoApi-Publish 
