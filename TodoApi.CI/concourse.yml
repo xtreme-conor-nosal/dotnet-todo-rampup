@@ -13,9 +13,17 @@ resources:
       password: {{cf-password}}
       organization: {{cf-org}}
       space: {{cf-space}}
+      
+  - name: gh-release
+    type: github-release
+    source:
+      owner: {{git-owner}}
+      repository: {{git-repo}}
+      access_token: {{git-token}}
+      draft: true
 
 jobs:
-- name: everything
+- name: build_test_package
   plan:
   - get: TodoApi
     trigger: true
@@ -23,6 +31,34 @@ jobs:
     file: TodoApi/TodoApi.CI/build.yml
   - task: test
     file: TodoApi/TodoApi.CI/test.yml
+  - task: package
+    file: TodoApi/TodoApi.CI/package.yml
+  - put: gh-release
+    params:
+      name: TodoApi-Archive/tag
+      tag: TodoApi-Archive/tag
+      globs:
+      - TodoApi-Archive/todo-api.zip
+      
+- name: staging
+  plan:
+  - get: gh-release
+    trigger: true
+    passed: [build_test_package]
+  - task: unzip
+    file: TodoApi/TodoApi.CI/unzip.yml
+  - put: cloud-foundry
+    params:
+      manifest: TodoApi-Publish/TodoApi.Deploy/cloud-foundry-staging.yml
+      
+- name: prod
+  plan:
+  - get: gh-release
+    trigger: false
+    passed: [build_test_package]
+  - task: unzip
+    file: TodoApi/TodoApi.CI/unzip.yml
   - put: cloud-foundry
     params:
       manifest: TodoApi-Publish/TodoApi.Deploy/cloud-foundry.yml
+  
