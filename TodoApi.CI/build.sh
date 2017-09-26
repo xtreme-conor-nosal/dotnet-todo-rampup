@@ -4,6 +4,6 @@ set -e
 cd TodoApi
 
 dotnet restore
-dotnet publish
+dotnet publish -c Release 
 
 cd ..

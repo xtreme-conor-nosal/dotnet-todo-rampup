@@ -4,6 +4,6 @@ set -e
 cd TodoApi.Tests
 
 dotnet restore
-dotnet xunit
+dotnet xunit -c Release 
 
 cd ..
