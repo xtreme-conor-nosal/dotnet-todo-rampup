@@ -1,0 +1,26 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ubuntu
+
+inputs:
+- name: TodoApi-Build
+
+outputs:
+- name: TodoApi-Archive
+
+run:
+  path: sh
+  args: 
+  - -exc
+  - |    
+    # Output for publishing
+    mkdir -p TodoApi-Publish/TodoApi/bin/Release/netcoreapp2.0/publish
+    mv TodoApi-Build/TodoApi/bin/Release/netcoreapp2.0/publish/* TodoApi-Publish/TodoApi/bin/Release/netcoreapp2.0/publish/
+    mv TodoApi-Build/TodoApi.Deploy TodoApi-Publish/
+    
+    # Output for github release
+    tar -cvf TodoApi-Archive/todo-api.tar TodoApi-Publish/*
+    echo v1.0.0-`date +%Y%m%d-%H%M%S` > TodoApi-Archive/tag 
