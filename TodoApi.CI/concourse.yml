@@ -1,0 +1,19 @@
+resources:
+  - name: TodoApi
+    type: git
+    source:
+      uri: https://github.com/xtreme-conor-nosal/dotnet-todo-rampup.git
+      branch: master
+
+jobs:
+- name: everything
+  plan:
+  - get: TodoApi
+    trigger: true
+  - task: build
+    file: TodoApi/TodoApi.CI/build.yml
+  - task: test
+    file: TodoApi/TodoApi.CI/test.yml
+    
+    
+    # TODO resource to hold artifacts between jobs, or single job with tasks, or rebuild in each job?

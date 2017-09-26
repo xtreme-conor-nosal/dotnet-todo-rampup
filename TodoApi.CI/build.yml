@@ -1,0 +1,22 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: microsoft/dotnet
+
+inputs:
+- name: TodoApi
+
+outputs:
+- name: TodoApi-Lib
+- name: TodoApi-Test
+
+run:
+  path: sh
+  args: 
+  - -exc
+  - |
+    TodoApi/TodoApi.CI/build.sh
+    mv TodoApi/TodoApi/bin/Debug/netcoreapp2.0/TodoApi.dll TodoApi-Lib
+    mv TodoApi/TodoApi.Tests/bin/Debug/netcoreapp2.0/TodoApi.Tests.dll TodoApi-Test
