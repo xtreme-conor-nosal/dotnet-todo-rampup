@@ -4,6 +4,15 @@ resources:
     source:
       uri: https://github.com/xtreme-conor-nosal/dotnet-todo-rampup.git
       branch: master
+      
+  - name: cloud-foundry
+    type: cf
+    source:
+      api: {{cf-api}}
+      username: {{cf-email}}
+      password: {{cf-password}}
+      organization: {{cf-org}}
+      space: {{cf-space}}
 
 jobs:
 - name: everything
@@ -14,6 +23,6 @@ jobs:
     file: TodoApi/TodoApi.CI/build.yml
   - task: test
     file: TodoApi/TodoApi.CI/test.yml
-    
-    
-    # TODO resource to hold artifacts between jobs, or single job with tasks, or rebuild in each job?
+  - put: cloud-foundry
+    params:
+      manifest: TodoApi-Publish/TodoApi.Deploy/cloud-foundry.yml

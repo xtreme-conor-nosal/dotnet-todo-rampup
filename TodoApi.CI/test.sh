@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-cd TodoApi/TodoApi.Tests
+cd TodoApi.Tests
 
 dotnet restore
 dotnet xunit
+
+cd ..

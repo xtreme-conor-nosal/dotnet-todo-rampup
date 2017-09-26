@@ -6,8 +6,13 @@ image_resource:
     repository: microsoft/dotnet
 
 inputs:
-- name: TodoApi
+- name: TodoApi-Build
 
 run:
   path: sh
-  args: ["TodoApi/TodoApi.CI/test.sh"]
+  args: 
+    - -exc
+    - |
+      cd TodoApi-Build
+      TodoApi.CI/test.sh
+      cd ..

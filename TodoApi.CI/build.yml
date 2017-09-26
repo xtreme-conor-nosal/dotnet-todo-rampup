@@ -9,14 +9,23 @@ inputs:
 - name: TodoApi
 
 outputs:
-- name: TodoApi-Lib
-- name: TodoApi-Test
+- name: TodoApi-Build
+- name: TodoApi-Publish
 
 run:
   path: sh
   args: 
   - -exc
   - |
-    TodoApi/TodoApi.CI/build.sh
-    mv TodoApi/TodoApi/bin/Debug/netcoreapp2.0/TodoApi.dll TodoApi-Lib
-    mv TodoApi/TodoApi.Tests/bin/Debug/netcoreapp2.0/TodoApi.Tests.dll TodoApi-Test
+    # Build
+    cd TodoApi
+    TodoApi.CI/build.sh
+    cd ..
+    
+    # Output for publishing
+    mkdir -p TodoApi-Publish/TodoApi/bin/Debug/netcoreapp2.0/publish
+    mv TodoApi/TodoApi/bin/Debug/netcoreapp2.0/publish/* TodoApi-Publish/TodoApi/bin/Debug/netcoreapp2.0/publish/
+    mv TodoApi/TodoApi.Deploy TodoApi-Publish/
+    
+    # Output for testing
+    mv TodoApi/* TodoApi-Build/

@@ -1,0 +1,5 @@
+---
+applications:
+- name: cnosal-todo-api
+  path: ../TodoApi/bin/Debug/netcoreapp2.0/publish
+  buildpack: https://github.com/cloudfoundry/dotnet-core-buildpack.git

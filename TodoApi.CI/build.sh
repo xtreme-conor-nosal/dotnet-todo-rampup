@@ -5,3 +5,5 @@ cd TodoApi
 
 dotnet restore
 dotnet publish
+
+cd ..
