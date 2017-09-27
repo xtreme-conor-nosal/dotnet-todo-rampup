@@ -26,6 +26,7 @@ namespace TodoApi.Tests.Controllers
             
             _client = new HttpClient();
             _client.BaseAddress = new Uri(baseUrl);
+            _client.Timeout = TimeSpan.FromMinutes(5);
         }
 
         [Fact]
