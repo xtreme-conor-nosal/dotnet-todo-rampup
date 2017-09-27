@@ -14,13 +14,21 @@ resources:
       organization: {{cf-org}}
       space: {{cf-space}}
       
+  - name: gh-draft
+    type: github-release
+    source:
+      owner: {{git-owner}}
+      repository: {{git-repo}}
+      access_token: {{git-token}}
+      drafts: true
+      
   - name: gh-release
     type: github-release
     source:
       owner: {{git-owner}}
       repository: {{git-repo}}
       access_token: {{git-token}}
-      draft: true
+      release: true
 
 jobs:
 - name: build_test_package
@@ -33,33 +41,49 @@ jobs:
     file: TodoApi/TodoApi.CI/test.yml
   - task: package
     file: TodoApi/TodoApi.CI/package.yml
-  - put: gh-release
+  - put: gh-draft
     params:
       name: TodoApi-Archive/tag
       tag: TodoApi-Archive/tag
       globs:
       - TodoApi-Archive/todo-api.tar
       
-- name: staging
+- name: deploy_staging
   plan:
   - get: TodoApi
-    trigger: false
-  - get: gh-release
+  - get: gh-draft
     trigger: true
     passed: [build_test_package]
   - task: unzip
-    file: TodoApi/TodoApi.CI/unzip.yml
+    file: TodoApi/TodoApi.CI/unzip-draft.yml
   - put: cloud-foundry
     params:
       manifest: TodoApi-Publish/TodoApi.Deploy/cloud-foundry-staging.yml
       
-- name: prod
+- name: smoke_staging
   plan:
   - get: TodoApi
-    trigger: false
+  - get: cloud-foundry
+    trigger: true
+    passed: [deploy_staging]
+  - get: gh-draft
+  - task: smoke
+    file: TodoApi/TodoApi.CI/smoke.yml
+    params:
+      Endpoint: http://cnosal-todo-api-staging.cfapps.io
+  - put: gh-release
+    params:
+      name: gh-draft/tag
+      tag: gh-draft/tag
+      globs:
+      - gh-draft/todo-api.tar
+      
+- name: deploy_prod
+  plan:
+  - get: TodoApi
   - get: gh-release
     trigger: false
-    passed: [build_test_package]
+    passed: [smoke_staging]
   - task: unzip
     file: TodoApi/TodoApi.CI/unzip.yml
   - put: cloud-foundry
