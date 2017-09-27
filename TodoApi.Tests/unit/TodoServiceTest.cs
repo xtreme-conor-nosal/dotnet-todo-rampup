@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Logging;
 using Moq;
 using TodoApi.Controllers;
 using TodoApi.Models;
@@ -13,7 +14,7 @@ namespace TodoApi.unit
     {
         private ITodoContext context;
         private Mock<ITodoContext> mockContext;
-        
+        private ILogger<TodoService> logger;
         
         private List<TodoItem> items;
         private TodoService subject;
@@ -22,6 +23,7 @@ namespace TodoApi.unit
         {
             context = Mock.Of<ITodoContext>();
             mockContext = Mock.Get(context);
+            logger = Mock.Of<ILogger<TodoService>>();
             
             items = new List<TodoItem>(new[]
                 {
@@ -37,7 +39,7 @@ namespace TodoApi.unit
         public void TodoServiceInitializesDatabaseWithOneItem()
         {
             mockContext.Setup(s => s.Count()).Returns(0);
-            subject = new TodoService(mockContext.Object);
+            subject = new TodoService(mockContext.Object, logger);
             
             mockContext.Verify(d => d.EnsureCreated());
             mockContext.Verify(s => s.Add(new TodoItem { Name = "Item1" }));
@@ -53,7 +55,7 @@ namespace TodoApi.unit
         [Fact]
         public void TodoServiceDoesNotReaddFirstItem()
         {
-            subject = new TodoService(mockContext.Object);
+            subject = new TodoService(mockContext.Object, logger);
             
             mockContext.Verify(d => d.EnsureCreated());
             mockContext.Verify(s => s.Add(new TodoItem { Name = "Item1" }), Times.Never);
@@ -62,14 +64,14 @@ namespace TodoApi.unit
         [Fact]
         public void GetAllReturnsFullSet()
         {
-            subject = new TodoService(mockContext.Object);
+            subject = new TodoService(mockContext.Object, logger);
             Assert.Equal(items, subject.GetAll());
         }
 
         [Fact]
         public void GetById_existingItem_returnsItem()
         {
-            subject = new TodoService(mockContext.Object);
+            subject = new TodoService(mockContext.Object, logger);
             mockContext.Setup(s => s.GetById(1)).Returns(items[0]);
             Assert.Equal(items[0], subject.GetById(1));
         }
@@ -77,7 +79,7 @@ namespace TodoApi.unit
         [Fact]
         public void GetById_invalidId_returnsNull()
         {
-            subject = new TodoService(mockContext.Object);
+            subject = new TodoService(mockContext.Object, logger);
             mockContext.Setup(s => s.GetById(4)).Returns((TodoItem)null);
             Assert.Null(subject.GetById(4));
         }
@@ -85,7 +87,7 @@ namespace TodoApi.unit
         [Fact]
         public void Create_addsItemAndReturnsWithId()
         {
-            subject = new TodoService(mockContext.Object);
+            subject = new TodoService(mockContext.Object, logger);
             TodoItem todoItem = new TodoItem { Name = "New", IsComplete = false };
             TodoItem saved = subject.Create(todoItem);
             mockContext.Verify(s => s.Add(todoItem));
@@ -96,7 +98,7 @@ namespace TodoApi.unit
         [Fact]
         public void Update_updatesItem()
         {
-            subject = new TodoService(mockContext.Object);
+            subject = new TodoService(mockContext.Object, logger);
             TodoItem todoItem = new TodoItem { Id = 2, Name = "New", IsComplete = true };
             TodoItem loadedItem = new TodoItem { Id = 2 };
             mockContext.Setup(s => s.GetById(2)).Returns(loadedItem);
@@ -110,7 +112,7 @@ namespace TodoApi.unit
         [Fact]
         public void DeleteById_deletesItem()
         {
-            subject = new TodoService(mockContext.Object);
+            subject = new TodoService(mockContext.Object, logger);
             TodoItem loadedItem = new TodoItem { Id = 2 };
             mockContext.Setup(s => s.GetById(2)).Returns(loadedItem);
             subject.DeleteById(2);

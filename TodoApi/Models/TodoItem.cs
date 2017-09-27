@@ -8,6 +8,11 @@ namespace TodoApi.Models
         public string Name { set; get; }
         public bool IsComplete { set; get; }
 
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(IsComplete)}: {IsComplete}";
+        }
+
         protected bool Equals(TodoItem other)
         {
             return Id == other.Id && string.Equals(Name, other.Name) && IsComplete == other.IsComplete;
