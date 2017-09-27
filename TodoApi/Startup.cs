@@ -25,6 +25,7 @@ namespace TodoApi
             ConfigureEntityFramework(services);
             services.AddMvc();
             services.AddTransient(typeof(TodoService));
+            services.AddTransient(typeof(ITodoContext), typeof(TodoContext));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

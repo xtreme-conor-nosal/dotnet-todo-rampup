@@ -6,55 +6,50 @@ namespace TodoApi.Controllers
 {
     public class TodoService
     {
-        private readonly TodoContext _context;
+        private readonly ITodoContext _context;
         
-        public TodoService(TodoContext context)
+        public TodoService(ITodoContext context)
         {
             _context = context;
 
-            _context.Database.EnsureCreated();
-            if (_context.TodoItems.Count() == 0)
+            _context.EnsureCreated();
+            if (_context.Count() == 0)
             {
-                _context.TodoItems.Add(new TodoItem { Name = "Item1" });
-                _context.SaveChanges();
+                _context.Add(new TodoItem { Name = "Item1" });
             }
         } 
         
         public IEnumerable<TodoItem> GetAll()
         {
-            return _context.TodoItems.ToList();
+            return _context.GetAll();
         }
 
         public TodoItem GetById(long id)
         {
-            return _context.TodoItems.FirstOrDefault(t => t.Id == id);
+            return _context.GetById(id);
         }
 
         public TodoItem Create(TodoItem item)
         {
-            _context.TodoItems.Add(item);
-            _context.SaveChanges();
-
+            _context.Add(item);
             return item;
         }
 
         public void Update(TodoItem item)
         {
-            var todo = _context.TodoItems.FirstOrDefault(t => t.Id == item.Id);
+            var todo = _context.GetById(item.Id);
             
             todo.IsComplete = item.IsComplete;
             todo.Name = item.Name;
 
-            _context.TodoItems.Update(todo);
-            _context.SaveChanges();
+            _context.Update(todo);
         }
 
         public void DeleteById(long id)
         {
-            var item = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+            var item = _context.GetById(id);
             
-            _context.TodoItems.Remove(item);
-            _context.SaveChanges();
+            _context.Remove(item);
         }
     }
 }
