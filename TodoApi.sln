@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApi", "TodoApi/TodoApi.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApi.Tests", "TodoApi.Tests\TodoApi.Tests.csproj", "{092F011B-E5EB-4F0B-AFA7-DBB95843FC2E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApi.SmokeTests", "TodoApi.SmokeTests\TodoApi.SmokeTests.csproj", "{6F0BE159-5266-4BA4-92EE-FA9BB8F98C6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{092F011B-E5EB-4F0B-AFA7-DBB95843FC2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{092F011B-E5EB-4F0B-AFA7-DBB95843FC2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{092F011B-E5EB-4F0B-AFA7-DBB95843FC2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F0BE159-5266-4BA4-92EE-FA9BB8F98C6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F0BE159-5266-4BA4-92EE-FA9BB8F98C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F0BE159-5266-4BA4-92EE-FA9BB8F98C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F0BE159-5266-4BA4-92EE-FA9BB8F98C6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
