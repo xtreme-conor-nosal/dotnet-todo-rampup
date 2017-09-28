@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Steeltoe.CloudFoundry.Connector.MySql.EFCore;
 using Steeltoe.Extensions.Configuration;
 using Steeltoe.Extensions.Logging.CloudFoundry;
 using Steeltoe.Management.CloudFoundry;
@@ -66,12 +67,7 @@ namespace TodoApi
             
             services.AddDbContext<TodoContext>(opt =>
             {
-                var hostname = $@"Server={Configuration["DB_HOST"]}";
-                var name = $@"database={Configuration["DB_NAME"]}";
-                var username = $@"uid={Configuration["DB_USER"]}";
-                var password = Configuration["DB_PASS"] == null ? "" : $@"pwd={Configuration["DB_PASS"]}";
-                var connection = $@"{hostname};{name};{username};{password};";
-                opt.UseMySql($@"{connection}");
+                opt.UseMySql(Configuration);
             });
         }
     }
