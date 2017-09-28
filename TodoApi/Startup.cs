@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Steeltoe.Extensions.Logging.CloudFoundry;
 using TodoApi.Controllers;
 using TodoApi.Models;
 
@@ -18,6 +13,17 @@ namespace TodoApi
     public class Startup
     {
         public IConfiguration Configuration { get; set; } 
+        
+        public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
+            ReadConfiguration(env);
+            AddLoggingProviders(loggerFactory);
+        }
+
+        protected virtual void AddLoggingProviders(ILoggerFactory loggerFactory)
+        {
+            loggerFactory.AddCloudFoundry(Configuration.GetSection("Logging"));
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -26,13 +32,12 @@ namespace TodoApi
             services.AddMvc();
             services.AddTransient(typeof(TodoService));
             services.AddTransient(typeof(ITodoContext), typeof(TodoContext));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            ReadConfiguration(env);
-
             app.UseMvc();
         }
 
