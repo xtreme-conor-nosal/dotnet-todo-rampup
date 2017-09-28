@@ -59,6 +59,8 @@ jobs:
       - TodoApi-Archive/todo-api.tar
       
 - name: deploy_staging
+  serial: true
+  serial_groups: [staging]
   plan:
   - get: TodoApi
   - get: gh-draft
@@ -71,6 +73,8 @@ jobs:
       manifest: TodoApi-Publish/TodoApi.Deploy/cloud-foundry-staging.yml
       
 - name: smoke_staging
+  serial: true
+  serial_groups: [staging]
   plan:
   - get: TodoApi
   - get: cloud-foundry-stage
@@ -90,6 +94,7 @@ jobs:
       - gh-draft/todo-api.tar
       
 - name: deploy_prod
+  serial: true
   plan:
   - get: TodoApi
   - get: gh-release
