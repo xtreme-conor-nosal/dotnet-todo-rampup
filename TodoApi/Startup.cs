@@ -37,7 +37,6 @@ namespace TodoApi
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseCloudFoundryActuators();
-            app.UseCloudFoundrySecurity();
             app.UseMvc();
             
             AddLoggingProviders(loggerFactory);
