@@ -15,10 +15,19 @@ namespace TodoApi
 {
     public class TestStartup : Startup
     {
+        public TestStartup(IHostingEnvironment env) : base(env)
+        {
+        }
         
         protected override void ReadConfiguration(IHostingEnvironment env)
         {
-            
+            var builder = new ConfigurationBuilder();
+           
+            Configuration = builder.Build();
+        }
+        
+        protected override void AddLoggingProviders(ILoggerFactory loggerFactory)
+        {
         }
 
         protected override void ConfigureEntityFramework(IServiceCollection services)

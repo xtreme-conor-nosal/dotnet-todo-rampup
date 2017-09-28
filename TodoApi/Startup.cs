@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Steeltoe.Extensions.Configuration;
+using Steeltoe.Extensions.Logging.CloudFoundry;
+using Steeltoe.Management.CloudFoundry;
+using Steeltoe.Management.Endpoint.CloudFoundry;
 using TodoApi.Controllers;
 using TodoApi.Models;
 
@@ -18,6 +16,11 @@ namespace TodoApi
     public class Startup
     {
         public IConfiguration Configuration { get; set; } 
+        
+        public Startup(IHostingEnvironment env)
+        {
+            ReadConfiguration(env);
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -26,14 +29,25 @@ namespace TodoApi
             services.AddMvc();
             services.AddTransient(typeof(TodoService));
             services.AddTransient(typeof(ITodoContext), typeof(TodoContext));
+            services.AddCloudFoundryActuators(Configuration);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            ReadConfiguration(env);
-
+            app.UseCloudFoundryActuators();
+            app.UseCloudFoundrySecurity();
             app.UseMvc();
+            
+            AddLoggingProviders(loggerFactory);
+        }
+
+        protected virtual void AddLoggingProviders(ILoggerFactory loggerFactory)
+        {
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+            loggerFactory.AddCloudFoundry(Configuration.GetSection("Logging"));
         }
 
         protected virtual void ReadConfiguration(IHostingEnvironment env)
@@ -42,6 +56,7 @@ namespace TodoApi
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddCloudFoundry()
                 .AddEnvironmentVariables();
            
             Configuration = builder.Build();
