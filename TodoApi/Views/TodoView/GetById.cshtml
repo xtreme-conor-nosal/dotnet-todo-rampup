@@ -1,0 +1,15 @@
+﻿@using System.Collections
+@using TodoApi.Models
+@model object
+
+<h2>Welcome</h2>
+
+<ul>
+
+    @{
+        TodoItem item = (TodoItem) ViewData["item"];
+        <li>ID: @item.Id</li>
+        <li>Name: @item.Name</li>
+        <li>Complete: @item.IsComplete</li>
+    }
+</ul>

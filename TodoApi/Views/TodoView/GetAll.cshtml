@@ -1,0 +1,21 @@
+﻿@using System.Collections
+@using TodoApi.Models
+@model object
+
+@{
+    ViewBag.Title = "title";
+}
+
+<h2>Welcome</h2>
+
+<ul>
+
+    @{
+        IEnumerator<TodoItem> enumerator = ((IEnumerable<TodoItem>) ViewData["items"]).GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            <li><a href="/todo/@enumerator.Current.Id">@enumerator.Current.Name</a></li>
+        }
+        enumerator.Dispose();
+    }
+</ul>
